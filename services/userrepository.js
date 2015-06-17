@@ -15,7 +15,7 @@ userRepository.findUser = function(username, callback) {
 };
 
 userRepository.attemptLogin = function(username, password, callback) {
-    userRepository.findUser(username, function(err, user) {
+    userRepository.findUser(username.toLowerCase(), function(err, user) {
         if (err) {
             return callback(err);
         }
