@@ -1,0 +1,21 @@
+{
+  "name": "carlsoncoder_budgettracker",
+  "version": "1.0.0",
+  "author": "Justin Carlson <justin@carlsoncoder.com>",
+  "description": "A simple budget tracking website",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.4.0",
+    "angular-ui-router": "0.2.15",
+    "jquery": "1.11.3",
+    "angular-tablesort": "1.0.7",
+    "toastr": "2.1.1"
+  }
+}

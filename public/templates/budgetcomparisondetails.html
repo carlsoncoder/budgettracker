@@ -1,0 +1,35 @@
+<div data-ng-show="errorMessage" class="alert alert-danger row">
+    <span>{{ errorMessage }}</span>
+</div>
+
+<p>{{currentDisplayMonth}} - {{selectedCategoryName}}</p>
+
+<table id="expenseDetailsTable" class="table" ts-wrapper>
+    <thead>
+        <tr>
+            <th>Actions</th>
+            <th ts-criteria="affectedDate" ts-default>Date</th>
+            <th ts-criteria="amount|parseFloat">Amount</th>
+            <th ts-criteria="comment">Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="detail in currentCategoryDetails" ng-class="$even ? 'oddRow' : 'evenRow'" ts-repeat>
+            <td><a ui-sref="modifybudgetexpense({ expenseId: detail._id })">EDIT</a> | <a href="" ng-click="deleteBudgetExpense(detail._id)">DELETE</a></td>
+            <td>{{detail.affectedDate | date:'MM/dd/yyyy' }}</td>
+            <td>{{detail.amount | to_monetary_value}}</td>
+            <td>{{detail.comment}}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td class="totalsRow"></td>
+            <td class="totalsRow"></td>
+            <td class="totalsRow"></td>
+            <td class="totalsRow"></td>
+        </tr>
+    </tfoot>
+</table>
+
+<div script-loader pagename="budgetcomparisondetails"></div>
+<toastr-watcher></toastr-watcher>

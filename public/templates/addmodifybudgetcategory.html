@@ -1,0 +1,24 @@
+<p ng-show="isRecordEdit">Edit Budget Category</p>
+<p ng-show="!isRecordEdit">Add Budget Category</p>
+
+<div data-ng-show="errorMessage" class="alert alert-danger row">
+    <span>{{ errorMessage }}</span>
+</div>
+
+<div class="form-group">
+    <span>Name:</span>
+    <input type="text" class="form-control" placeholder="Name" ng-model="currentCategory.name" autofocus />
+</div>
+<div class="form-group">
+    <span>Description:</span>
+    <input type="text" class="form-control" placeholder="Description" ng-model="currentCategory.description" />
+</div>
+<div class="form-group">
+    <span>Budgeted Amount:</span>
+    <input type="text" class="form-control" placeholder="Budgeted Amount" ng-model="currentCategory.budgetedAmount" />
+</div>
+
+<button class="btn btn-primary" ng-click="saveBudgetCategory()">Save</button>
+
+<div script-loader pagename="managecategories"></div>
+<toastr-watcher></toastr-watcher>

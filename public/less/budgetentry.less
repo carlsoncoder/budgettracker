@@ -1,0 +1,219 @@
+@nav-image-anchor-margin: 0 10px 0 10px;
+@nav-login-anchor-margin: 7px 10px 0 10px;
+@nav-login-anchor-font-size: 1.1em;
+@nav-anchor-padding: 7px 0 0 0;
+
+@small-border-radius: 4px;
+@large-border-radius: 8px;
+
+@custom-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+@custom-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+
+@light-blue-border: 1px solid #B0D3F5;
+
+@bootstrap-content-box-shadow: 0 0 2px black;
+
+@copyright-text-color: black;
+
+@light-green-color: #6DA578;
+@light-blue-color: #B0D3F5;
+
+@site-title-color: black;
+
+@media screen and (max-width: 760px) {
+  .nomobile {
+    display: none;
+  }
+}
+
+body {
+  padding: 50px;
+  background-image: url("../img/my-background-image.jpg");
+  font-family: 'Ubuntu', sans-serif !important;
+}
+
+.bootstrapContentDiv {
+  -moz-box-shadow: @bootstrap-content-box-shadow;
+  -webkit-box-shadow: @bootstrap-content-box-shadow;
+  box-shadow: @bootstrap-content-box-shadow;
+  background-image: url("../img/Subtle-Dots-White-Tileable-pattern.jpg");
+}
+
+p {
+  font-size: 1.3em;
+}
+
+div.faded {
+  background-color: rgba(0,0,0,0.8);
+  width:100%;
+  height:100%;
+  z-index:10;
+  top:0;
+  left:0;
+  position:fixed;
+}
+
+div.fadedOverlay {
+  position: fixed;
+  left: 40%;
+  top: 40%;
+  background-color: white;
+  border-radius: 8px;
+  z-index: 11;
+  height: 200px;
+  width: 220px;
+}
+
+.loadingGif {
+  margin-left:26px;
+  margin-top:5px;
+}
+
+.loadingTextParagraph {
+  text-align:center;
+}
+
+footer > p {
+  text-align:center;
+}
+
+footer > p > a {
+  font-size:1.4em;
+  color: @copyright-text-color;
+}
+
+#logoutAnchor {
+  margin: @nav-login-anchor-margin;
+  padding: @nav-anchor-padding;
+  font-size: @nav-login-anchor-font-size;
+}
+
+#loginAnchor {
+  margin: @nav-login-anchor-margin;
+  padding: @nav-anchor-padding;
+  font-size: @nav-login-anchor-font-size;
+}
+
+#changePasswordAnchor {
+  margin: @nav-login-anchor-margin;
+  padding: @nav-anchor-padding;
+  font-size: @nav-login-anchor-font-size;
+}
+
+#siteSectionTitle {
+  font-size: 1.4em;
+  color: @site-title-color;
+}
+
+.sectionLink {
+  font-size: 1.3em;
+}
+
+.siteLinkName {
+  width: 30%;
+}
+
+.siteLinkName a {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+.siteLinkDescription {
+  width: 65%;
+  font-size: 1.2em;
+}
+
+.blogNavigationButtonContainer {
+  text-align:center;
+}
+
+.blogEntryDiv {
+  padding: 7px;
+  margin: 30px 0 30px 0;
+  -webkit-text-shadow: @custom-text-shadow;
+  text-shadow: @custom-text-shadow;
+  -webkit-border-radius: @large-border-radius;
+  -moz-border-radius: @large-border-radius;
+  border-radius: @large-border-radius;
+  border: solid 1px #20538D;
+  -webkit-box-shadow: @custom-box-shadow;
+  -moz-box-shadow: @custom-box-shadow;
+  box-shadow: @custom-box-shadow;
+  background-color: white;
+  font-size:1.2em;
+}
+
+.warningParagraph {
+  font-weight:bold;
+  font-size:1.5em;
+  color:red;
+  margin-left:25px;
+}
+
+.largeParagraph {
+  font-size: 2.0em;
+}
+
+.largeParagraphBold {
+  font-size: 2.0em;
+  font-weight: bold;
+}
+
+.addRightMargin {
+  margin-right:15px;
+}
+
+.floatRight {
+  float: right;
+}
+
+.navbar-default {
+  background-color: @light-green-color;
+  background-image: none;
+  border: 1px solid black;
+}
+
+.navbar-default .navbar-nav>li>a {
+  color: black;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.active>a {
+  background-color: black;
+  background-image: none;
+  color: @light-green-color;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:hover, .navbar-default .navbar-nav>.active>a:focus {
+  background-color: black;
+  background-image: none;
+  color: @light-green-color;
+}
+
+.btn-primary {
+  color: black;
+  background-color: @light-green-color;
+  background-image: none;
+}
+
+.btn-primary:hover {
+  color: @light-green-color;
+  background-color: black;
+  background-image: none;
+}
+
+tr.evenRow {
+  background-color: #B3F2B4 !important;
+}
+
+tr.oddRow {
+  background-color: #DCFBDC !important;
+}
+
+.table, th, td {
+  border: 1px solid black;
+}
+
+.totalsRow{
+  color: white;
+  background-color: #4D4D4D;
+}

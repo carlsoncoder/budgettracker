@@ -1,0 +1,59 @@
+<div data-ng-show="errorMessage" class="alert alert-danger row">
+    <span>{{ errorMessage }}</span>
+</div>
+
+<div id="chooseDateDiv" ng-show="showDateChanger">
+    <div class="form-group">
+        <span>Selected Date</span>
+        <input type="date" class="form-control" placeholder="Date" ng-model="dateToChange" />
+    </div>
+    <button class="btn btn-primary" ng-click="changeDate()">Change</button>
+</div>
+
+<div id="tableDiv" ng-hide="showDateChanger">
+
+    <p>Budget Categories - {{currentDisplayMonth}}</p>
+
+    <div class="form-group">
+        <span>Filter:</span>
+        <select ng-init="selectedFilterOption = 'ALL'" class="form-control" style="width:150px;" ng-options="filterOption for filterOption in filterOptions" ng-model="selectedFilterOption"></select>
+    </div>
+
+    <button class="btn btn-primary" style="margin-bottom:15px;width:150px;" ng-click="enableShowDateChanger()">Change Date</button>
+
+    <table id="monthlyBudgetExpenseTable" class="table" ng-hide="showDateChanger" ts-wrapper>
+        <thead>
+            <tr>
+                <th ts-criteria="categoryName">Category</th>
+                <th ts-criteria="actualAmount|parseFloat">Spent</th>
+                <th ts-criteria="budgetedAmount|parseFloat">Budgeted</th>
+                <th ts-criteria="percentOfBudget|parseFloat" ts-default="descending">% of Budget</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="category in currentMonthExpenses.allCategories" ng-show="category | filter_budget_category:selectedFilterOption" ng-class="$even ? 'oddRow' : 'evenRow'" ts-repeat>
+                <td>{{category.categoryName}}</td>
+                <td>{{category.actualAmount | to_monetary_value}}</td>
+                <td>{{category.budgetedAmount | to_monetary_value}}</td>
+                <td>{{category.percentOfBudget}}</td>
+                <td><a ui-sref="budgetcomparisondetails({ detailsCategoryId: category.categoryId, dateToChange: dateToChange })">Details</a></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="totalsRow">TOTAL</td>
+                <td class="totalsRow">{{currentMonthExpenses.totalActual | to_monetary_value}}</td>
+                <td class="totalsRow">{{currentMonthExpenses.totalBudgeted | to_monetary_value}}</td>
+                <td class="totalsRow">{{currentMonthExpenses.totalPercentOfBudget}}</td>
+                <td class="totalsRow"></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <p><em>Note: The Totals row is never filtered</em></p>
+
+</div>
+
+<div script-loader pagename="budgetcomparisons"></div>
+<toastr-watcher></toastr-watcher>

@@ -1,0 +1,9 @@
+.DS_Store
+.idea/
+/config/config.js
+/config/config.development.js
+/config/config.production.js
+node_modules/
+test/coverage/
+public/bower_components
+__TODO__
