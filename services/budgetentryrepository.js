@@ -3,6 +3,7 @@ var ObjectId = mongoose.Types.ObjectId;
 var BudgetEntries = mongoose.model('BudgetEntry');
 var budgetCategoryRepository = require('./budgetcategoryrepository');
 
+var startingDate = new Date('Mon Jun 01 2015 00:00:00 GMT-0500 (CDT)');
 var budgetEntryRepository = {};
 
 budgetEntryRepository.loadByMonth = function(userId, loadDate, callback) {
@@ -120,6 +121,93 @@ budgetEntryRepository.loadSpecificExpense = function(userId, expenseId, callback
         }
 
         return callback(null, expense);
+    });
+};
+
+budgetEntryRepository.loadChartData = function(userId, categoryId, callback) {
+    var today = new Date();
+
+    var initialMonthProcessed = false;
+    var currentLoopDateTime = new Date(startingDate);
+
+    var datesToLoad = [];
+
+    while (true) {
+        if (initialMonthProcessed) {
+            currentLoopDateTime.setMonth(currentLoopDateTime.getMonth() + 1);
+        }
+        else {
+            initialMonthProcessed = true;
+        }
+
+        var startDate = new Date(currentLoopDateTime);
+        var endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 1);
+        endDate.setSeconds(endDate.getSeconds() - 1);
+
+        datesToLoad.push({
+            startDate: startDate,
+            endDate: endDate,
+            actualAmount: 0
+        });
+
+        if (currentLoopDateTime > today) {
+            break;
+        }
+    }
+
+    budgetCategoryRepository.loadAll(userId, function (err, categories) {
+        if (err) {
+            return callback(err);
+        }
+
+        var budgetedAmount = 0;
+
+        var expensesQuery = null;
+        if (categoryId === 'ALL') {
+            expensesQuery = BudgetEntries.find({'userId': new ObjectId(userId)}, 'affectedDate amount').sort('affectedDate');
+            categories.forEach(function (category) {
+                budgetedAmount += category.budgetedAmount;
+            });
+        }
+        else {
+            expensesQuery = BudgetEntries.find({
+                'userId': new ObjectId(userId),
+                'categoryId': new ObjectId(categoryId)
+            }, 'affectedDate amount').sort('affectedDate');
+            categories.forEach(function (category) {
+                if (category._id.toString() === categoryId.toString()) {
+                    budgetedAmount = category.budgetedAmount;
+                }
+            });
+        }
+
+        budgetedAmount = budgetedAmount / 100;
+
+        expensesQuery.exec(function(err, expenses) {
+            for (var j = 0; j < expenses.length; j++) {
+                var currentExpense = expenses[j];
+                for (var k = 0; k < datesToLoad.length; k++) {
+                    var currentDateObject = datesToLoad[k];
+                    if (currentExpense.affectedDate >= currentDateObject.startDate && currentExpense.affectedDate <= currentDateObject.endDate) {
+                        currentDateObject.actualAmount += currentExpense.amount;
+                        break;
+                    }
+                }
+            }
+
+            var totals = [];
+
+            datesToLoad.forEach(function(record) {
+                totals.push({
+                    x: record.startDate,
+                    budgeted: budgetedAmount,
+                    actual: parseInt(record.actualAmount / 100)
+                });
+            });
+
+            return callback(null, totals);
+        });
     });
 };
 

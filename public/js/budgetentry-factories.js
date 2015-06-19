@@ -6,7 +6,7 @@ budgetEntryFactories.factory('budgetexpenses', ['$http', '$state', 'budgetcatego
     var budgetExpenseFactory = {};
 
     budgetExpenseFactory.loadByMonth = function(dateToLoad, budgetCategories, callback) {
-        if (IsNullOrUndefined(dateToLoad)) {
+        if (isNullOrUndefined(dateToLoad)) {
             dateToLoad = new Date();
         }
 
@@ -25,7 +25,7 @@ budgetEntryFactories.factory('budgetexpenses', ['$http', '$state', 'budgetcatego
     };
 
     budgetExpenseFactory.loadDetailsByMonthAndCategory = function(dateToLoad, categoryId, callback) {
-        if (IsNullOrUndefined(dateToLoad)) {
+        if (isNullOrUndefined(dateToLoad)) {
             dateToLoad = new Date();
         }
 
@@ -170,6 +170,35 @@ budgetEntryFactories.factory('budgetcategories', ['$http', '$state', function($h
     };
 
     return budgetCategoryFactory;
+}]);
+
+budgetEntryFactories.factory('budgetcharts', ['$http', '$state', function($http, $state) {
+    var budgetChartFactory = {};
+
+    budgetChartFactory.loadDataForCategory = function(categoryId, callback) {
+
+        $http.get('/budget/chartdetailsbycategory', { params: {categoryId: categoryId } })
+            .success(function(data, status) {
+                if (status === 500) {
+                    callback(false, data.toString(), null);
+                }
+                else {
+                    data.forEach(function(row) {
+                        // get the data back into native types instead of strings
+                        row.x = new Date(row.x);
+                        row.budgeted = parseInt(row.budgeted);
+                        row.actual = parseInt(row.actual);
+                    });
+
+                    callback(true, '', data);
+                }
+            })
+            .error(function(data, status) {
+                callback(false, data.toString(), null);
+            });
+    };
+
+    return budgetChartFactory;
 }]);
 
 budgetEntryFactories.factory('auth', ['$http', '$window', function($http, $window) {

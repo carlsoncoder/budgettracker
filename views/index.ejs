@@ -20,6 +20,9 @@
         <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
         <script type="text/javascript" src="bower_components/angular-tablesort/js/angular-tablesort.js"></script>
         <script type="text/javascript" src="bower_components/toastr/toastr.min.js"></script>
+        <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
+        <script type="text/javascript" src="bower_components/moment/min/moment.min.js"></script>
+        <script type="text/javascript" src="bower_components/n3-line-chart/build/line-chart.min.js"></script>
 
         <!-- AngularJS -->
         <script type="text/javascript" src="js/budgetentry-scripts.js"></script>
@@ -36,7 +39,7 @@
         <script>
             $(document).ready(function() {
                 $('.navbar-nav a:not(.dropdown-toggle)').on('click', function () {
-                    if (IsMobileViewPort()) {
+                    if (isMobileViewPort()) {
                         $(".navbar-toggle").click();
                     }
                 });

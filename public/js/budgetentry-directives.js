@@ -16,6 +16,7 @@ budgetEntryDirectives.directive('scriptLoader', function() {
                 case 'enterbudgetexpense':
                 {
                     initializeOnControllerLoad(enterExpenseSectionLinkId);
+                    scope.removeAllCategory();
                     break;
                 }
 
@@ -28,6 +29,8 @@ budgetEntryDirectives.directive('scriptLoader', function() {
                 case 'budgetchart':
                 {
                     initializeOnControllerLoad(budgetChartSectionLinkId);
+                    scope.injectAllCategory();
+                    scope.loadChartData('ALL');
                     break;
                 }
 
@@ -70,11 +73,11 @@ budgetEntryDirectives.directive('toastrWatcher', function() {
         restrict: 'E',
         link: function(scope, element, attrs) {
             scope.$watch('userMessage', function(newValue, oldValue) {
-                if (!IsNullOrUndefined(newValue) && !IsNullOrUndefined(newValue.message)) {
+                if (!isNullOrUndefined(newValue) && !isNullOrUndefined(newValue.message)) {
                     if (newValue.type === 'success') {
                         toastr.success(newValue.message, newValue.title);
 
-                        if (newValue.nextState !== 'NONE' && !IsNullOrUndefined(scope) && !IsNullOrUndefined(scope.$state)) {
+                        if (newValue.nextState !== 'NONE' && !isNullOrUndefined(scope) && !isNullOrUndefined(scope.$state)) {
                             scope.$state.go(newValue.nextState);
                         }
                     }

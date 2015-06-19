@@ -95,4 +95,15 @@ router.post('/saveexpense', auth, function(req, res, next) {
     });
 });
 
+// GET /budget/chartdetailsbycategory
+router.get('/chartdetailsbycategory', auth, function(req, res, next) {
+    budgetEntryRepository.loadChartData(req.payload._id, req.query.categoryId, function(err, chartData) {
+        if (err) {
+            return res.status(500).json(err);
+        }
+
+        return res.status(200).json(chartData);
+    });
+});
+
 module.exports = router;

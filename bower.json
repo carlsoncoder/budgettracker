@@ -16,6 +16,7 @@
     "angular-ui-router": "0.2.15",
     "jquery": "1.11.3",
     "angular-tablesort": "1.0.7",
-    "toastr": "2.1.1"
+    "toastr": "2.1.1",
+    "n3-line-chart": "1.1.9"
   }
 }

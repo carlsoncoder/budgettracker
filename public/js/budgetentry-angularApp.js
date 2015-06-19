@@ -2,6 +2,7 @@ var app = angular.module('budgetEntryApp',
     [
         'ui.router',
         'tableSort',
+        'n3-line-chart',
         'budgetentry.controllers',
         'budgetentry.filters',
         'budgetentry.directives',

@@ -106,7 +106,7 @@ function formatMonthString(monthString) {
 /// Determines the available viewport width.
 /// </summary>
 /// <returns>The available width of the viewport.</returns>
-function GetViewPortWidth() {
+function getViewPortWidth() {
     return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 }
 
@@ -114,7 +114,7 @@ function GetViewPortWidth() {
 /// Determines the available viewport height.
 /// </summary>
 /// <returns>The available height of the viewport.</returns>
-function GetViewPortHeight() {
+function getViewPortHeight() {
     return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 }
 
@@ -123,7 +123,7 @@ function GetViewPortHeight() {
 /// </summary>
 /// <param name="obj">The object to be evaluated.</param>
 /// <returns>True if the object is null or undefined, otherwise false.</returns>
-function IsNullOrUndefined(obj) {
+function isNullOrUndefined(obj) {
     return typeof (obj) === 'undefined' || obj === null;
 }
 
@@ -132,7 +132,7 @@ function IsNullOrUndefined(obj) {
 /// </summary>
 /// <param name="numberToCheck">The object to be evaluated.</param>
 /// <returns>True if the object is a number, otherwise false.</returns>
-function IsNumber(numberToCheck) {
+function isNumber(numberToCheck) {
     return !isNaN(parseFloat(numberToCheck)) && isFinite(numberToCheck);
 }
 
@@ -140,10 +140,38 @@ function IsNumber(numberToCheck) {
 /// Determines if we are in a mobile viewport.
 /// </summary>
 /// <returns>True if the viewport is 'mobile' width, otherwise false.</returns>
-function IsMobileViewPort() {
+function isMobileViewPort() {
 
-    var viewportWidth = GetViewPortWidth();
+    var viewportWidth = getViewPortWidth();
     return viewportWidth < bootstrap_grid_float_breakpoint_pixel_value;
+}
+
+/// <summary>
+/// Formats an amount string to a proper value including a dollar sign.
+/// </summary>
+/// <param name="amountValue">The amount to be formatted.</param>
+/// <returns>The formatted string.</returns>
+function formatAmountString(amountValue) {
+    var amountString = amountValue.toString();
+    if (amountString.length === 4) {
+        return '$' + amountString.substring(0, 1) + ',' + amountString.substring(1, 4);
+    }
+    else if (amountString.length === 5) {
+        return '$' + amountString.substring(0, 2) + ',' + amountString.substring(2, 6);
+    }
+    else {
+        return '$' + amountString;
+    }
+}
+
+/// <summary>
+/// Formats a date string to a proper value for chart display.
+/// </summary>
+/// <param name="dateValue">The date string to be formatted.</param>
+/// <returns>The formatted string.</returns>
+function formatDateForChart(dateValue) {
+    var date = new Date(dateValue.toString());
+    return moment(date).format('MMMM YYYY');
 }
 
 /// <summary>

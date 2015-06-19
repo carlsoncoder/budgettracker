@@ -7,8 +7,9 @@ budgetEntryControllers.controller('BudgetController', [
     '$stateParams',
     'budgetcategories',
     'budgetexpenses',
+    'budgetcharts',
     'auth',
-    function($scope, $rootScope, $state, $stateParams, budgetcategories, budgetexpenses, auth) {
+    function($scope, $rootScope, $state, $stateParams, budgetcategories, budgetexpenses, budgetcharts, auth) {
         $scope.$state = $state;
         $scope.isLoggedIn = auth.isLoggedIn;
         $scope.currentCategory = {};
@@ -83,7 +84,7 @@ budgetEntryControllers.controller('BudgetController', [
                 else {
                     $scope.currentMonthExpenses = expenses;
 
-                    if (IsNullOrUndefined(dateToLoad)) {
+                    if (isNullOrUndefined(dateToLoad)) {
                         dateToLoad = new Date();
                     }
 
@@ -109,7 +110,7 @@ budgetEntryControllers.controller('BudgetController', [
         };
 
         $scope.changeDate = function() {
-            if (IsNullOrUndefined($scope.dateToChange) || $scope.dateToChange === '') {
+            if (isNullOrUndefined($scope.dateToChange) || $scope.dateToChange === '') {
                 $scope.errorMessage = 'You must enter a valid date';
                 return;
             }
@@ -120,27 +121,27 @@ budgetEntryControllers.controller('BudgetController', [
         };
 
         $scope.saveBudgetExpense = function() {
-            if (IsNullOrUndefined($scope.currentExpense.affectedDate) || $scope.currentExpense.affectedDate === '') {
+            if (isNullOrUndefined($scope.currentExpense.affectedDate) || $scope.currentExpense.affectedDate === '') {
                 $scope.errorMessage = 'A date is required for the expense';
                 return;
             }
 
-            if (IsNullOrUndefined($scope.currentExpense.amount) || $scope.currentExpense.amount === '') {
+            if (isNullOrUndefined($scope.currentExpense.amount) || $scope.currentExpense.amount === '') {
                 $scope.errorMessage = 'An amount is required for the expense';
                 return;
             }
 
-            if (!IsNumber($scope.currentExpense.amount) || $scope.currentExpense.amount < 0) {
+            if (!isNumber($scope.currentExpense.amount) || $scope.currentExpense.amount < 0) {
                 $scope.errorMessage = 'A valid number greater than zero must be specified for the expense amount';
                 return;
             }
 
-            if (IsNullOrUndefined($scope.selectedBudgetCategory) || IsNullOrUndefined($scope.selectedBudgetCategory._id)) {
+            if (isNullOrUndefined($scope.selectedBudgetCategory) || isNullOrUndefined($scope.selectedBudgetCategory._id)) {
                 $scope.errorMessage = 'A category must be specified for the expense';
                 return;
             }
 
-            if (!IsNullOrUndefined($scope.currentExpense.comment) && $scope.currentExpense.comment !== '') {
+            if (!isNullOrUndefined($scope.currentExpense.comment) && $scope.currentExpense.comment !== '') {
                 if ($scope.currentExpense.comment.length > 256) {
                     $scope.errorMessage = 'The maximum comment length is 256.  Please enter a shorter comment';
                     return;
@@ -161,22 +162,22 @@ budgetEntryControllers.controller('BudgetController', [
         };
 
         $scope.saveBudgetCategory = function() {
-            if (IsNullOrUndefined($scope.currentCategory.name) || $scope.currentCategory.name === '') {
+            if (isNullOrUndefined($scope.currentCategory.name) || $scope.currentCategory.name === '') {
                 $scope.errorMessage = 'A name is required for the budget category';
                 return;
             }
 
-            if (IsNullOrUndefined($scope.currentCategory.description) || $scope.currentCategory.description === '') {
+            if (isNullOrUndefined($scope.currentCategory.description) || $scope.currentCategory.description === '') {
                 $scope.errorMessage = 'A description is required for the budget category';
                 return;
             }
 
-            if (IsNullOrUndefined($scope.currentCategory.budgetedAmount) || $scope.currentCategory.budgetedAmount === '') {
+            if (isNullOrUndefined($scope.currentCategory.budgetedAmount) || $scope.currentCategory.budgetedAmount === '') {
                 $scope.errorMessage = 'A budgeted amount is required for the budget category';
                 return;
             }
 
-            if (!IsNumber($scope.currentCategory.budgetedAmount) || $scope.currentCategory.budgetedAmount < 0) {
+            if (!isNumber($scope.currentCategory.budgetedAmount) || $scope.currentCategory.budgetedAmount < 0) {
                 $scope.errorMessage = 'A valid number greater than zero must be specified for the budgeted amount';
                 return;
             }
@@ -221,6 +222,82 @@ budgetEntryControllers.controller('BudgetController', [
             }
         };
 
+        $scope.injectAllCategory = function() {
+            for (var i = 0; i < $scope.budgetCategories.length; i++) {
+                if ($scope.budgetCategories[i].name === 'ALL') {
+                    $scope.selectedBudgetCategory = $scope.budgetCategories[i];
+                    return;
+                }
+            }
+
+            var allCategory = buildAllCategory();
+            $scope.selectedBudgetCategory = allCategory;
+            $scope.budgetCategories.unshift(allCategory);
+        };
+
+        $scope.removeAllCategory = function() {
+            updateDeletedCategory(buildAllCategory());
+        };
+
+        $scope.loadChartData = function(categoryId) {
+            budgetcharts.loadDataForCategory(categoryId, function(status, err, chartData) {
+
+                if (!status) {
+                    $scope.userMessage = { type: 'error', title: 'Budget Chart', message: 'Error loading chart: ' + err, nextState: 'NONE'};
+                    return;
+                }
+
+                $scope.chartData = chartData;
+                var minimumValue = 0;
+                var maximumValue = 0;
+
+                $scope.chartData.forEach(function(row) {
+                    if (row.budgeted > maximumValue || row.actual > maximumValue) {
+                        maximumValue = row.actual > row.budgeted ? row.actual : row.budgeted;
+                    }
+
+                    if (minimumValue === 0) {
+                        minimumValue = row.actual > row.budgeted ? row.budgeted : row.actual;
+                    }
+                    else if (row.budgeted < minimumValue || row.actual < minimumValue) {
+                        minimumValue = row.actual > row.budgeted ? row.budgeted : row.actual;
+                    }
+                });
+
+                var minY = minimumValue * 0.90;
+                var maxY = maximumValue * 1.10;
+                var xTicks = $scope.chartData.length;
+
+                $scope.chartOptions = {
+                    axes: {
+                        x: {key: 'x', type: 'date', ticks: xTicks, labelFunction: function(v) { return formatDateForChart(v); }},
+                        y: {key: 'y', type: 'linear', min: minY, max: maxY, ticks: 10, labelFunction: function(v) { return formatAmountString(v);}}
+                    },
+                    series: [
+                        {y: 'budgeted', color: 'blue', thickness: '2px', type: 'area', drawDots: true, dotSize: 3, label: 'Budgeted'},
+                        {y: 'actual', color: 'green', thickness: '2px', type: 'area', drawDots: true, dotSize: 3, label: 'Actual'}
+                    ],
+                    tooltip: {
+                        mode: 'scrubber',
+                        formatter: function(x, y, series) {
+                            var formattedAmount = formatAmountString(y);
+                            if (series.y === 'actual') {
+                                return 'Actual: ' + formattedAmount;
+                            }
+                            else {
+                                return 'Budgeted: ' + formattedAmount;
+                            }
+                        }},
+                    margin: {
+                        left: 100
+                    },
+                    lineMode: 'cardinal',
+                    tension: 0.7,
+                    hideOverflow: false
+                };
+            });
+        };
+
         function updateDeletedCategory(deleted) {
             var newCategoryList = [];
 
@@ -250,6 +327,16 @@ budgetEntryControllers.controller('BudgetController', [
             var dateString = year.toString() + '-' + (month < 10 ? '0' + month.toString() : month.toString());
             $scope.currentDisplayMonth = formatMonthString(dateString);
         }
+
+        function buildAllCategory() {
+            var allCategory = {};
+            allCategory._id = 'ALL';
+            allCategory.budgetedAmount = $scope.totalBudgetedAllCategories;
+            allCategory.name = 'ALL';
+            allCategory.description = 'Total of all budgeted categories';
+
+            return allCategory;
+        }
     }]);
 
 budgetEntryControllers.controller('NavigationController', [
@@ -269,12 +356,12 @@ budgetEntryControllers.controller('NavigationController', [
         $scope.user = {};
 
         $scope.logIn = function() {
-            if (IsNullOrUndefined($scope.user.username) || $scope.user.username === '') {
+            if (isNullOrUndefined($scope.user.username) || $scope.user.username === '') {
                 $scope.errorMessage = 'Please enter your user name';
                 return;
             }
 
-            if (IsNullOrUndefined($scope.user.password) || $scope.user.password === '') {
+            if (isNullOrUndefined($scope.user.password) || $scope.user.password === '') {
                 $scope.errorMessage = 'Please enter your password';
                 return;
             }
@@ -296,17 +383,17 @@ budgetEntryControllers.controller('NavigationController', [
         };
 
         $scope.changePassword = function() {
-            if (IsNullOrUndefined($scope.oldPassword) || $scope.oldPassword === '') {
+            if (isNullOrUndefined($scope.oldPassword) || $scope.oldPassword === '') {
                 $scope.errorMessage = 'You must enter the old password';
                 return;
             }
 
-            if (IsNullOrUndefined($scope.newPassword) || $scope.newPassword === '') {
+            if (isNullOrUndefined($scope.newPassword) || $scope.newPassword === '') {
                 $scope.errorMessage = 'You must enter a new password';
                 return;
             }
 
-            if (IsNullOrUndefined($scope.newPasswordConfirm) || $scope.newPasswordConfirm === '') {
+            if (isNullOrUndefined($scope.newPasswordConfirm) || $scope.newPasswordConfirm === '') {
                 $scope.errorMessage = 'You must confirm your new password';
                 return;
             }

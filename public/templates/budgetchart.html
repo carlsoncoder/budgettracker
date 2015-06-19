@@ -1,4 +1,9 @@
-<p>BUDGET CHART</p>
+<div class="form-group">
+    <span>Category</span>
+    <select class="form-control" ng-options="category.name for category in budgetCategories" ng-model="selectedBudgetCategory" ng-change="loadChartData(selectedBudgetCategory._id)"></select>
+</div>
+
+<linechart data="chartData" options="chartOptions" mode="" width="" height=""></linechart>
 
 <div script-loader pagename="budgetchart"></div>
 <toastr-watcher></toastr-watcher>
