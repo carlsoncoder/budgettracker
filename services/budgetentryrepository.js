@@ -3,7 +3,7 @@ var ObjectId = mongoose.Types.ObjectId;
 var BudgetEntries = mongoose.model('BudgetEntry');
 var budgetCategoryRepository = require('./budgetcategoryrepository');
 
-var startingDate = new Date('Mon Jun 01 2015 00:00:00 GMT-0500 (CDT)');
+var startingDate = new Date('Sun May 01 2016 00:00:00 GMT-0600 (CST)');
 var budgetEntryRepository = {};
 
 budgetEntryRepository.loadByMonth = function(userId, loadDate, callback) {
